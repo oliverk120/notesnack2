@@ -1,0 +1,15 @@
+{
+  "name": "formulas",
+  "version": "0.0.1",
+  "description": "Some description of formulas",
+  "author": {
+    "name": "mean scaffold"
+  },
+  "mean": "0.5.0",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
+  },
+  "dependencies": {},
+  "license": "MIT"
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  db: 'mongodb://' + (process.env.DB_PORT_27017_TCP_ADDR || 'localhost') + '/meand1',
+  db: 'mongodb://oliver:kliver@widmore.mongohq.com:10000/notesnack',
   debug: true,
   logging: {
     format: 'tiny'

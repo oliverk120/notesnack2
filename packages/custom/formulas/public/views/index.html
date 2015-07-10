@@ -1,0 +1,21 @@
+<section data-ng-controller="FormulasController" data-ng-init="find()">
+  <ul class="formulas unstyled">
+    <li data-ng-repeat="formula in formulas">
+      <span>{{formula.created | date:'medium'}}</span> /
+      <span>{{formula.user.name}}</span>
+      <h2>
+        <a data-ng-href="/formulas/{{formula._id}}">{{formula.title}}</a>
+        <span data-ng-if="hasAuthorization(formula)">
+          <a class="btn" href="/formulas/{{formula._id}}/edit">
+            <i class="glyphicon glyphicon-edit"></i>
+          </a>
+          <a class="btn" data-ng-click="remove(formula);">
+            <i class="glyphicon glyphicon-trash"></i>
+          </a>
+        </span>
+      </h2>
+      <div>{{formula.content}}</div>
+    </li>
+  </ul>
+  <h1 data-ng-hide="!formulas || formulas.length">No formulas yet. <br> Why don't you <a href="/formulas/create">Create One</a>?</h1>
+</section>
