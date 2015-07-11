@@ -1,21 +1,38 @@
 'use strict';
 
-var formula = require('../controllers/formulas');
+// Formula authorization helpers
+var hasAuthorization = function(req, res, next) {
+  if (!req.user.isAdmin && !req.formula.user._id.equals(req.user._id)) {
+    return res.status(401).send('User is not authorized');
+  }
+  next();
+};
 
-/* jshint -W098 */
-// The Package is past automatically as first parameter
-module.exports = function(Formulas, app, auth, database) {
-        app.route('/api/formulas/:formulaId')
-            .get(formula.show)
-            .put(formula.update)
-            .delete(formula.destroy);
+var hasPermissions = function(req, res, next) {
 
-        // sample api route
-        app.route('/api/formulas')
-            .get(formula.all)
-            .post(formula.create);
-        // route to handle delete goes here (app.delete)
+    req.body.permissions = req.body.permissions || ['authenticated'];
 
-        app.param('formulaId', formula.formula);
+    req.body.permissions.forEach(function(permission) {
+        if (req.acl.user.allowed.indexOf(permission) === -1) {
+            return res.status(401).send('User not allowed to assign ' + permission + ' permission.');
+        };
+    });
 
+    next();
+};
+
+module.exports = function(Formulas, app, auth) {
+  
+  var formulas = require('../controllers/formulas')(Formulas);
+
+  app.route('/api/formulas')
+    .get(formulas.all)
+    .post(auth.requiresLogin, hasPermissions, formulas.create);
+  app.route('/api/formulas/:formulaId')
+    .get(auth.isMongoId, formulas.show)
+    .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, hasPermissions, formulas.update)
+    .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, formulas.destroy);
+
+  // Finish with setting up the formulaId param
+  app.param('formulaId', formulas.formula);
 };

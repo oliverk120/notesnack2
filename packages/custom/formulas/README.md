@@ -1,1 +1,1 @@
-README: formulas
+README: articles

@@ -1,10 +1,14 @@
-<div ng-controller="FormulasController" class="sidebar col-md-2">
-<div class="module" data-ng-init="findOne()">
-		<div>
-			<button class="btn" ng-click="delete()">Delete</button>
-			<button class="btn" ><a href="formulas/{{formula._id}}/edit">Edit</a></button>
-		</div>
-		<h3 class="title">{{formula.title}}</h3>
-		<div class="content"> {{formula.content}}</div>
-	</div>
-</div>      
+<section data-ng-controller="FormulasController" data-ng-init="findOne()">
+  <span>{{formula.created | date:'medium'}}</span> /
+  <span>{{formula.user.name}}</span>
+  <h2>{{formula.title}}</h2>
+  <div data-ng-if="hasAuthorization(formula)">
+    <a class="btn" href="/formulas/{{formula._id}}/edit">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn" data-ng-click="remove(formula);">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <div>{{formula.content}}</div>
+</section>

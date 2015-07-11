@@ -1,11 +1,11 @@
 {
   "name": "formulas",
   "version": "0.0.1",
-  "description": "Some description of formulas",
+  "description": "Formulas example package",
   "author": {
-    "name": "mean scaffold"
+    "name": "Linnovate"
   },
-  "mean": "0.5.0",
+  "mean": "0.4.x",
   "engines": {
     "node": "0.10.x",
     "npm": "1.4.x"

@@ -1,8 +1,11 @@
-// app/models/formula.js
-// grab the mongoose module
-var mongoose = require('mongoose');
+'use strict';
 
-Schema = mongoose.Schema;
+/**
+ * Module dependencies.
+ */
+var mongoose = require('mongoose'),
+  Schema = mongoose.Schema;
+
 
 /**
  * Formula Schema
@@ -13,10 +16,21 @@ var FormulaSchema = new Schema({
     default: Date.now
   },
   title: {
-    type: String
+    type: String,
+    required: true,
+    trim: true
   },
   content: {
-    type: String
+    type: String,
+    required: true,
+    trim: true
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
+  permissions: {
+    type: Array
   },
   updated: {
     type: Array
@@ -34,12 +48,13 @@ FormulaSchema.path('content').validate(function(content) {
   return !!content;
 }, 'Content cannot be blank');
 
+/**
+ * Statics
+ */
 FormulaSchema.statics.load = function(id, cb) {
   this.findOne({
     _id: id
-  }).exec(cb);
+  }).populate('user', 'name username').exec(cb);
 };
 
-// define our nerd model
-// module.exports allows us to pass this to other files when it is called
-module.exports = mongoose.model('Formula', FormulaSchema);
+mongoose.model('Formula', FormulaSchema);
