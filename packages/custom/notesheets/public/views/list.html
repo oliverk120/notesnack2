@@ -1,0 +1,21 @@
+<section data-ng-controller="NotesheetsController" data-ng-init="find()">
+  <ul class="notesheets unstyled">
+    <li data-ng-repeat="notesheet in notesheets">
+      <span>{{notesheet.created | date:'medium'}}</span> /
+      <span>{{notesheet.user.name}}</span>
+      <h2>
+        <a data-ng-href="/notesheets/{{notesheet._id}}">{{notesheet.title}}</a>
+        <span data-ng-if="hasAuthorization(notesheet)">
+          <a class="btn" href="/notesheets/{{notesheet._id}}/edit">
+            <i class="glyphicon glyphicon-edit"></i>
+          </a>
+          <a class="btn" data-ng-click="remove(notesheet);">
+            <i class="glyphicon glyphicon-trash"></i>
+          </a>
+        </span>
+      </h2>
+      <div>{{notesheet.content}}</div>
+    </li>
+  </ul>
+  <h1 data-ng-hide="!notesheets || notesheets.length">No notesheets yet. <br> Why don't you <a href="/notesheets/create">Create One</a>?</h1>
+</section>

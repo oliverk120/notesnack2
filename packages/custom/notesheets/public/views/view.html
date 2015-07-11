@@ -1,0 +1,14 @@
+<section data-ng-controller="NotesheetsController" data-ng-init="findOne()">
+  <span>{{notesheet.created | date:'medium'}}</span> /
+  <span>{{notesheet.user.name}}</span>
+  <h2>{{notesheet.title}}</h2>
+  <div data-ng-if="hasAuthorization(notesheet)">
+    <a class="btn" href="/notesheets/{{notesheet._id}}/edit">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn" data-ng-click="remove(notesheet);">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <div>{{notesheet.content}}</div>
+</section>

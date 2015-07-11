@@ -1,27 +1,38 @@
 'use strict';
 
-/* jshint -W098 */
-// The Package is past automatically as first parameter
-module.exports = function(Notesheets, app, auth, database) {
+// Notesheet authorization helpers
+var hasAuthorization = function(req, res, next) {
+  if (!req.user.isAdmin && !req.notesheet.user._id.equals(req.user._id)) {
+    return res.status(401).send('User is not authorized');
+  }
+  next();
+};
 
-  app.get('/api/notesheets/example/anyone', function(req, res, next) {
-    res.send('Anyone can access this');
-  });
+var hasPermissions = function(req, res, next) {
 
-  app.get('/api/notesheets/example/auth', auth.requiresLogin, function(req, res, next) {
-    res.send('Only authenticated users can access this');
-  });
+    req.body.permissions = req.body.permissions || ['authenticated'];
 
-  app.get('/api/notesheets/example/admin', auth.requiresAdmin, function(req, res, next) {
-    res.send('Only users with Admin role can access this');
-  });
-
-  app.get('/api/notesheets/example/render', function(req, res, next) {
-    Notesheets.render('index', {
-      package: 'notesheets'
-    }, function(err, html) {
-      //Rendering a view from the Package server/views
-      res.send(html);
+    req.body.permissions.forEach(function(permission) {
+        if (req.acl.user.allowed.indexOf(permission) === -1) {
+            return res.status(401).send('User not allowed to assign ' + permission + ' permission.');
+        };
     });
-  });
+
+    next();
+};
+
+module.exports = function(Notesheets, app, auth) {
+  
+  var notesheets = require('../controllers/notesheets')(Notesheets);
+
+  app.route('/api/notesheets')
+    .get(notesheets.all)
+    .post(auth.requiresLogin, hasPermissions, notesheets.create);
+  app.route('/api/notesheets/:notesheetId')
+    .get(auth.isMongoId, notesheets.show)
+    .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, hasPermissions, notesheets.update)
+    .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, notesheets.destroy);
+
+  // Finish with setting up the notesheetId param
+  app.param('notesheetId', notesheets.notesheet);
 };
