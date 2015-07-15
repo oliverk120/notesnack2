@@ -30,11 +30,10 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
     };
 
     $scope.create = function(isValid) {
-      console.log($scope.notesheet);
+      
       if (isValid) {
-        // $scope.notesheet.permissions.push('test test');
+        $scope.notesheet.content = JSON.stringify($scope.sheetData);
         var notesheet = new Notesheets($scope.notesheet);
-
         notesheet.$save(function(response) {
           $location.path('notesheets/' + response._id);
         });
@@ -65,6 +64,7 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
 
     $scope.update = function(isValid) {
       if (isValid) {
+        $scope.notesheet.content = JSON.stringify($scope.sheetData);
         var notesheet = $scope.notesheet;
         if (!notesheet.updated) {
           notesheet.updated = [];
@@ -90,6 +90,7 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
         notesheetId: $stateParams.notesheetId
       }, function(notesheet) {
         $scope.notesheet = notesheet;
+        $scope.notesheet.content = JSON.parse($scope.sheetData);
       });
     };
 
