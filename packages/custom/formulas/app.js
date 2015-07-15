@@ -17,6 +17,9 @@ Formulas.register(function(app, auth, database, circles, swagger) {
   Formulas.routes(app, auth, database);
 
   Formulas.aggregateAsset('css', 'formulas.css');
+  Formulas.aggregateAsset('css', 'jqmath.css');
+  Formulas.aggregateAsset('js', 'jqmath.js');
+  Formulas.aggregateAsset('js', 'packery.js');
 
   
   //We are adding a link to the main menu for all authenticated users

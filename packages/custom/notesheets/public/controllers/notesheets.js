@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', '$stateParams', '$location', 'Global', 'Notesheets', 'MeanUser', 'Circles',
-  function($scope, $stateParams, $location, Global, Notesheets, MeanUser, Circles) {
+angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', '$stateParams', '$location', 'Global', 'Notesheets', 'Formulas', 'MeanUser', 'Circles',
+  function($scope, $stateParams, $location, Global, Notesheets, Formulas, MeanUser, Circles) {
     $scope.global = Global;
+    $scope.sheetData = [];
+    $scope.sheetDataIds = [];
 
     $scope.hasAuthorization = function(notesheet) {
       if (!notesheet || !notesheet.user) return false;
@@ -28,6 +30,7 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
     };
 
     $scope.create = function(isValid) {
+      console.log($scope.notesheet);
       if (isValid) {
         // $scope.notesheet.permissions.push('test test');
         var notesheet = new Notesheets($scope.notesheet);
@@ -89,5 +92,27 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
         $scope.notesheet = notesheet;
       });
     };
+
+    $scope.findFormula = function() {
+      Formulas.query(function(formulas) {
+        $scope.formulas = formulas;
+        //if pagination is defined somewhere, filter the list
+        if($scope.numPerPage){
+          $scope.filteredFormulas = $scope.formulas.slice(0, $scope.numPerPage);
+        }
+        $scope.totalItems = $scope.formulas.length;
+      });
+    };
+
+    $scope.appendItem = function(object) {
+      //to disable duplicates
+      console.log(object);
+      if ($scope.sheetDataIds.indexOf(object._id) == -1) {
+        $scope.sheetData.push(object);
+        $scope.sheetDataIds.push(object._id);
+      } else {
+        alert('This formula has already been added to the note sheet');
+      }
+    }
   }
 ]);
