@@ -8,7 +8,7 @@
     "angular-mocks": "latest",
     "angular-route": "latest",
     "bootstrap": "latest",
-    "angular-bootstrap": "latest",
+    "angular-bootstrap": "~0.13.0",
     "angular-ui-router": "#master",
     "web-bootstrap": "./node_modules/meanio/resources/web-bootstrap.js",
     "angular-ui-select": "latest",

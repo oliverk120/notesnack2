@@ -4,7 +4,10 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
   function($scope, $stateParams, $location, Global, Notesheets, Formulas, MeanUser, Circles) {
     $scope.global = Global;
     $scope.sheetData = [];
-    $scope.sheetDataIds = [];
+    $scope.sheetDataIds = [];  
+    // pagination settings  
+    $scope.currentPage = 1;
+    $scope.numPerPage = 5;
 
     $scope.hasAuthorization = function(notesheet) {
       if (!notesheet || !notesheet.user) return false;
@@ -27,6 +30,14 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
 
     $scope.selectPermission = function() {
         $scope.descendants = [];
+    };
+
+    $scope.createOrUpdate = function(isValid){
+      if($stateParams.hasOwnProperty('notesheetId')){
+        $scope.update(isValid);
+      } else {
+        $scope.create(isValid);
+      }
     };
 
     $scope.create = function(isValid) {
@@ -86,18 +97,19 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
     };
 
     $scope.findOne = function() {
-      Notesheets.get({
+      if($stateParams.hasOwnProperty('notesheetId')){
+        Notesheets.get({
         notesheetId: $stateParams.notesheetId
       }, function(notesheet) {
         $scope.notesheet = notesheet;
-        $scope.notesheet.content = JSON.parse($scope.sheetData);
+        $scope.sheetData = JSON.parse(notesheet.content);
       });
+      }
     };
 
     $scope.findFormula = function() {
       Formulas.query(function(formulas) {
         $scope.formulas = formulas;
-        //if pagination is defined somewhere, filter the list
         if($scope.numPerPage){
           $scope.filteredFormulas = $scope.formulas.slice(0, $scope.numPerPage);
         }
@@ -115,5 +127,49 @@ angular.module('mean.notesheets').controller('NotesheetsController', ['$scope', 
         alert('This formula has already been added to the note sheet');
       }
     }
+
+    
+
   }
-]);
+]).controller('PaginationDemoCtrl', ['$scope', function($scope){
+
+
+
+    ///Pagination Functions
+    $scope.pagination = function(){
+      this.fun = function(){
+        console.log('wurs');
+      }
+    }
+
+    $scope.selectPage = function(page, evt) {
+      console.log('selected');
+      if ( $scope.page !== page && page > 0 && page <= $scope.totalPages) {
+        if (evt && evt.target) {
+          evt.target.blur();
+        }
+      }
+      $scope.setPage(page);
+    };
+
+    $scope.setPage = function (pageNo) {
+      $scope.currentPage = pageNo;
+      var begin = (($scope.currentPage - 1) * $scope.numPerPage)
+      , end = begin + $scope.numPerPage;
+      if($scope.formulas.length > 0){
+        $scope.filteredFormulas = $scope.formulas.slice(begin, end);
+      }
+    };
+
+    $scope.onFocus = function(){
+      //allows you to search all formulas, not just the ones on the current pagination page
+      $scope.filteredData = $scope.formulas;
+    }
+
+    $scope.outFocus = function(){
+      //limits the formulas shown to the current pagination page
+      $scope.searchText = '';
+      $scope.setPage($scope.currentPage);
+    }
+
+}]);

@@ -1,14 +1,28 @@
-<section data-ng-controller="NotesheetsController" data-ng-init="findOne()">
-  <span>{{notesheet.created | date:'medium'}}</span> /
-  <span>{{notesheet.user.name}}</span>
-  <h2>{{notesheet.title}}</h2>
-  <div data-ng-if="hasAuthorization(notesheet)">
-    <a class="btn" href="/notesheets/{{notesheet._id}}/edit">
-      <i class="glyphicon glyphicon-edit"></i>
-    </a>
-    <a class="btn" data-ng-click="remove(notesheet);">
-      <i class="glyphicon glyphicon-trash"></i>
-    </a>
+<section data-ng-controller = "NotesheetsController">
+  <div class="sidebar col-md-2" data-ng-init="find()">
+    <ul class="formulaList">
+      <li data-ng-repeat="item in notesheets"><a href="/notesheets/{{item._id}}">{{item.title}}</a></li>
+    </ul>
   </div>
-  <div>{{notesheet.content}}</div>
+  <div class="col-md-10" data-ng-init="findOne()">
+    <h3 ng-class="{'hidden':editable}">{{notesheet.title}}</h3>
+    <div class="row">
+      <div class="btn">
+        <a href="notesheets/{{notesheet._id}}/edit">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+        </a>
+      </div>
+      <div id="arrange" class="btn">
+        <span class="glyphicon glyphicon-th" aria-hidden="true"></span> Arrange
+      </div>
+    </div>
+    
+    <div class="row"> 
+      <div id="formulaSheet" workspace class="module-container">
+        <div data-ng-repeat="item in sheetData" nsformula>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+

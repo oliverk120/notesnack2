@@ -26,7 +26,7 @@ angular.module('mean.notesheets').config(['$stateProvider',
       })
       .state('edit notesheet', {
         url: '/notesheets/:notesheetId/edit',
-        templateUrl: '/notesheets/views/edit.html',
+        templateUrl: '/notesheets/views/create.html',
         resolve: {
           loggedin: function(MeanUser) {
             return MeanUser.checkLoggedin();
